@@ -1,96 +1,144 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customs Agent Pro 786</title>
+    <title>Customs & Freight Pro 786</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #002b5b; --accent: #f39c12; --bg: #f4f7f6; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 30px; }
-        .header { background: var(--primary); color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; }
-        .container { padding: 15px; max-width: 500px; margin: auto; }
-        .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        h2 { font-size: 18px; color: var(--primary); margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-        .task { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
+        :root { --primary: #001e3c; --accent: #f39c12; --light: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: #e2e8f0; margin: 0; padding-bottom: 50px; }
+        .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
+        .tabs { display: flex; background: white; sticky: top; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: none; font-weight: bold; cursor: pointer; color: #64748b; border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--accent); }
+        .tab-content { display: none; padding: 15px; }
+        .tab-content.active { display: block; }
+        .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        h2 { font-size: 16px; color: var(--primary); margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; }
+        .btn-main { background: var(--primary); color: white; width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-pdf { background: #dc2626; margin-top: 20px; }
+        .task { display: flex; align-items: center; font-size: 14px; margin-bottom: 8px; }
         .task input { width: auto; margin-right: 10px; }
-        .btn-save { background: #27ae60; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; margin-bottom: 10px; cursor: pointer; }
-        .btn-pdf { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div id="app-content">
+<div id="capture-area">
     <div class="header">
-        <h1 style="margin:0; font-size:20px;">CUSTOMS AGENT REPORT</h1>
-        <small>Professional Offline Assistant</small>
+        <h1 style="margin:0; font-size:22px;">CUSTOMS & FREIGHT PRO 786</h1>
+        <p style="margin:5px 0 0; opacity:0.8;">Professional Logistics Dashboard</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event, 'customs')">CUSTOMS AGENT</button>
+        <button class="tab-btn" onclick="openTab(event, 'freight')">FREIGHT & CBM</button>
     </div>
 
     <div class="container">
-        <div class="card">
-            <h2><i class="fas fa-ship"></i> Shipment Details</h2>
-            <input type="text" id="igm" placeholder="IGM Number">
-            <input type="text" id="index" placeholder="Index Number">
-            <input type="text" id="container" placeholder="Container Number">
+        <div id="customs" class="tab-content active">
+            <div class="card">
+                <h2><i class="fas fa-file-invoice"></i> Customs Duty Details</h2>
+                <input type="text" id="igm" placeholder="IGM Number">
+                <input type="text" id="index" placeholder="Index Number">
+                <input type="text" id="hscode" placeholder="HS Code (e.g. 8415.10)">
+                <input type="number" id="dutyVal" placeholder="Assessed Value (PKR)">
+            </div>
+            <div class="card">
+                <h2><i class="fas fa-tasks"></i> Clearance Checklist</h2>
+                <div class="task"><input type="checkbox"> Vessel Arrival Monitor</div>
+                <div class="task"><input type="checkbox"> DO Collection Process</div>
+                <div class="task"><input type="checkbox"> GD Filing & Duty Payment</div>
+                <div class="task"><input type="checkbox"> Physical Examination</div>
+                <div class="task"><input type="checkbox"> Final Out-Gate Approval</div>
+            </div>
         </div>
 
-        <div class="card">
-            <h2><i class="fas fa-list"></i> Import/Export Duties</h2>
-            <div class="task"><input type="checkbox"> Vessel Arrival/IGM Tracked</div>
-            <div class="task"><input type="checkbox"> Delivery Order (DO) Collected</div>
-            <div class="task"><input type="checkbox"> GD Filed & Duty Paid</div>
-            <div class="task"><input type="checkbox"> Physical Examination Done</div>
-            <div class="task"><input type="checkbox"> DRAP/PSQCA Clearance (If req)</div>
-        </div>
-
-        <div class="card">
-            <h2><i class="fas fa-file"></i> Document Status</h2>
-            <div class="task"><input type="checkbox"> Original B/L & Invoice</div>
-            <div class="task"><input type="checkbox"> Packing List & NTN Copy</div>
-            <div class="task"><input type="checkbox"> Certificate of Origin</div>
+        <div id="freight" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-ship"></i> Freight & Tracking</h2>
+                <input type="text" id="shipline" placeholder="Shipping Line Name">
+                <input type="text" id="container" placeholder="Container Number">
+                <input type="number" id="freightCharges" placeholder="Freight Charges (USD)">
+            </div>
+            <div class="card">
+                <h2><i class="fas fa-cube"></i> CBM Calculator</h2>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <input type="number" id="l" placeholder="L (cm)">
+                    <input type="number" id="w" placeholder="W (cm)">
+                    <input type="number" id="h" placeholder="H (cm)">
+                    <input type="number" id="q" placeholder="Qty">
+                </div>
+                <button class="btn-main" style="background:#475569;" onclick="calculateCBM()">Calculate CBM</button>
+                <p id="cbmRes" style="font-weight:bold; color:green; text-align:center;"></p>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="container">
-    <button class="btn-save" onclick="saveData()">Save Data Offline</button>
-    <button class="btn-pdf" onclick="generatePDF()">Download Secure PDF</button>
+<div class="container" style="padding:15px;">
+    <button class="btn-main" onclick="saveData()">SAVE DATA OFFLINE</button>
+    <button class="btn-main btn-pdf" onclick="downloadPDF()">DOWNLOAD SECURE PDF</button>
 </div>
 
 <script>
-    // Offline Storage
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    function calculateCBM() {
+        let l = document.getElementById('l').value;
+        let w = document.getElementById('w').value;
+        let h = document.getElementById('h').value;
+        let q = document.getElementById('q').value;
+        if(l && w && h && q) {
+            let res = (l * w * h * q) / 1000000;
+            document.getElementById('cbmRes').innerText = "Total CBM: " + res.toFixed(3);
+        }
+    }
+
     function saveData() {
         const data = {
             igm: document.getElementById('igm').value,
-            index: document.getElementById('index').value,
-            container: document.getElementById('container').value
+            container: document.getElementById('container').value,
+            shipline: document.getElementById('shipline').value
         };
-        localStorage.setItem('customsData', JSON.stringify(data));
-        alert('Data saved locally!');
+        localStorage.setItem('agentData786', JSON.stringify(data));
+        alert("Data Saved on this Device!");
     }
 
-    // PDF Generation
-    async function generatePDF() {
+    async function downloadPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        const element = document.getElementById('app-content');
+        // Show all content for PDF
+        document.getElementById('customs').style.display = 'block';
+        document.getElementById('freight').style.display = 'block';
         
-        html2canvas(element).then((canvas) => {
-            const imgData = canvas.toDataURL('image/png');
-            doc.addImage(imgData, 'PNG', 10, 10, 190, 0);
-            doc.save("Customs_Report_786.pdf");
+        html2canvas(document.getElementById('capture-area')).then(canvas => {
+            const img = canvas.toDataURL('image/png');
+            doc.addImage(img, 'PNG', 10, 10, 190, 0);
+            doc.save("Customs_Freight_Report.pdf");
+            // Reset tabs
+            openTab({currentTarget: document.getElementsByClassName('tab-btn')[0]}, 'customs');
         });
     }
 
-    // Load Data on Start
     window.onload = () => {
-        const saved = JSON.parse(localStorage.getItem('customsData'));
+        const saved = JSON.parse(localStorage.getItem('agentData786'));
         if(saved) {
             document.getElementById('igm').value = saved.igm || '';
-            document.getElementById('index').value = saved.index || '';
             document.getElementById('container').value = saved.container || '';
+            document.getElementById('shipline').value = saved.shipline || '';
         }
     };
 </script>
